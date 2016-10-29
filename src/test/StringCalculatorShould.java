@@ -3,6 +3,9 @@ package test;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import stringcalculator.DelimiterExtractor;
+import stringcalculator.NumbersGreaterThanOtherRemover;
+import stringcalculator.NumbersLessThanOtherNotAllowedValidator;
 import stringcalculator.StringCalculator;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,7 +16,7 @@ public class StringCalculatorShould {
     public void return_zero_if_input_is_empty() throws Exception {
         int expectedResult = 0;
 
-        StringCalculator calculator = new StringCalculator();
+        StringCalculator calculator = givenAStringCalculator();
 
         int result = calculator.add("");
 
@@ -24,7 +27,7 @@ public class StringCalculatorShould {
     public void return_one_if_input_is_one() throws Exception {
         int expectedResult = 1;
 
-        StringCalculator calculator = new StringCalculator();
+        StringCalculator calculator = givenAStringCalculator();
 
         int result = calculator.add("1");
 
@@ -35,7 +38,7 @@ public class StringCalculatorShould {
     public void return_three_if_input_is_one_and_two() throws Exception {
         int expectedResult = 3;
 
-        StringCalculator calculator = new StringCalculator();
+        StringCalculator calculator = givenAStringCalculator();
 
         int result = calculator.add("1,2");
 
@@ -46,7 +49,7 @@ public class StringCalculatorShould {
     public void return_fifteen_if_input_is_from_one_to_five() throws Exception {
         int expectedResult = 15;
 
-        StringCalculator calculator = new StringCalculator();
+        StringCalculator calculator = givenAStringCalculator();
 
         int result = calculator.add("1,2,3,4,5");
 
@@ -57,7 +60,7 @@ public class StringCalculatorShould {
     public void return_two_if_input_is_two_and_thousand_and_one() throws Exception {
         int expectedResult = 2;
 
-        StringCalculator calculator = new StringCalculator();
+        StringCalculator calculator = givenAStringCalculator();
 
         int result = calculator.add("2,1001");
 
@@ -72,8 +75,15 @@ public class StringCalculatorShould {
         thrown.expect(Exception.class);
         thrown.expectMessage("negatives not allowed");
 
-        StringCalculator calculator = new StringCalculator();
+        StringCalculator calculator = givenAStringCalculator();
 
         int result = calculator.add("2,-5");
+    }
+
+    private StringCalculator givenAStringCalculator() {
+        StringCalculator.Extractor extractor = new DelimiterExtractor(",");
+        StringCalculator.Remover remover = new NumbersGreaterThanOtherRemover(1000);
+        StringCalculator.Validator validator = new NumbersLessThanOtherNotAllowedValidator(0);
+        return new StringCalculator(extractor, remover, validator);
     }
 }

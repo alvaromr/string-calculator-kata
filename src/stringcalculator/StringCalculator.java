@@ -1,41 +1,48 @@
 package stringcalculator;
 
+import stringcalculator.exception.ValidationException;
+
+import java.util.List;
+
 public class StringCalculator {
-    private int DEFAULT_RESULT = 0;
+    private Extractor extractor;
+    private Remover remover;
+    private Validator validator;
+
+    public StringCalculator(Extractor extractor, Remover remover, Validator validator) {
+        this.extractor = extractor;
+        this.remover = remover;
+        this.validator = validator;
+    }
 
     public int add(String input) throws Exception {
-        if (input=="")
-        {
-            return DEFAULT_RESULT;
-        }
-        if (input.contains(","))
-        {
-            return handleMultiple(input);
-        }
-        return parseSingle(input);
+        List<Integer> numbers;
+
+        numbers = extractor.extractNumbers(input);
+        numbers = remover.removeIgnoredNumbers(numbers);
+        validator.validateNumbers(numbers);
+
+        return sum(numbers);
     }
 
-    private static int parseSingle(String input) throws Exception {
-        int number = Integer.parseInt(input);
-
-        if (number > 1000)
-            return 0;
-        else if (number < 0)
-            throw new Exception("negatives not allowed");
-        else
-            return number;
-
-    }
-
-    private int handleMultiple(String input) throws Exception {
+    private int sum(List<Integer> numbers) {
         int sum = 0;
-
-        String[] numbers = input.split(",");
-
-        for (String number:numbers) {
-            sum += parseSingle(number);
+        for (int number : numbers) {
+            sum += number;
         }
 
         return sum;
+    }
+
+    public interface Validator {
+        void validateNumbers(List<Integer> numbers) throws ValidationException;
+    }
+
+    public interface Extractor {
+        List<Integer> extractNumbers(String input);
+    }
+
+    public interface Remover {
+        List<Integer> removeIgnoredNumbers(List<Integer> numbers);
     }
 }
