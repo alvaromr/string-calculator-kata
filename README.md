@@ -7,9 +7,9 @@ Refactor a given string-based calculator following SOLID principles.
 ## Starter Rules
 
 This rules define the behaviour of StringCalculator
+
 1. StringCalculator must keep `int add(String numbers)` method interface.
-2. StringCalculator takes an unknown amount of numbers separated by commas
-and return their sum.
+2. StringCalculator takes an unknown amount of numbers separated by commas and return their sum.
 3. Negative numbers are not allowed and must raise an exception.
 4. Numbers greater than 1000 must be ignored.
 
